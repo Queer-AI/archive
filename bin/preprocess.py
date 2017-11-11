@@ -1,7 +1,7 @@
 import os
 import csv
 import re
-import urllib2
+import urllib
 
 INPUT_URL = "https://s3-us-west-1.amazonaws.com/queer-ai/corpus/literotica.csv"
 INPUT_FILE = "data/literotica.csv"
@@ -15,7 +15,7 @@ RE_CHUNK_SIZE = 100000
 chars = ""
 
 if not os.path.isfile(INPUT_FILE):
-    urllib2.urlretrieve(INPUT_URL, INPUT_FILE)
+    urllib.urlretrieve(INPUT_URL, INPUT_FILE)
 
 with open(INPUT_FILE, 'r+') as data_file:
     for line in csv.DictReader(data_file):
