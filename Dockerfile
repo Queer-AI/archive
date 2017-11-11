@@ -33,7 +33,11 @@ RUN pip --no-cache-dir install \
 
 WORKDIR /var/www
 
-curl -sLo data/translate.ckpt-170600.data-00000-of-00001 https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-170600.data-00000-of-00001
+ENV MODEL_ID 170600
+
+RUN curl -sLo data/translate.ckpt-${MODEL_ID}.data-00000-of-00001 https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-${MODEL_ID}.data-00000-of-00001 \
+  && curl -sLo data/translate.ckpt-${MODEL_ID}.index https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-${MODEL_ID}.index \
+  && curl -sLo data/translate.ckpt-${MODEL_ID}.meta https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-${MODEL_ID}.meta
 
 # Copy sample .
 COPY api /api
