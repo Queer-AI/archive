@@ -42,15 +42,17 @@ def scrape_genre(genre_slug, page_limit = PAGES_PER_GENRE):
         try:
             page = urllib2.urlopen(url).read()
             scrape_list_page(page)
-        except urllib2.HTTPError as e:
+        except (urllib2.HTTPError, ValueError) as e:
             print(e)
-            break;
+            break
+
+def save():
+    with open(DATA_FILE, 'w+') as data_file:
+        writer = csv.DictWriter(data_file, fieldnames=["url", "story"])
+        writer.writeheader()
+        for row in data.itervalues():
+            writer.writerow(row)
 
 for g in GENRES:
     scrape_genre(g)
-
-with open(DATA_FILE, 'w+') as data_file:
-    writer = csv.DictWriter(data_file, fieldnames=["url", "story"])
-    writer.writeheader()
-    for row in data.itervalues():
-        writer.writerow(row)
+    save()

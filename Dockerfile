@@ -1,6 +1,4 @@
-FROM ubuntu:16.04
-
-LABEL maintainer="Craig Citro <craigcitro@google.com>"
+FROM debian:wheezy
 
 # Pick up some TF dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -19,36 +17,31 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python get-pip.py && \
-    rm get-pip.py
+RUN sudo easy_install pip
 
 RUN pip --no-cache-dir install \
-        Pillow \
-        h5py \
-        ipykernel \
-        jupyter \
-        matplotlib \
+        autobahn \
         numpy \
-        pandas \
-        scipy \
-        sklearn \
+        six \
+        twisted \
         && \
     python -m ipykernel.kernelspec
 
 # Install TensorFlow CPU version from central repo
 RUN pip --no-cache-dir install \
-    http://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.2.0-cp27-none-linux_x86_64.whl
+    http://storage.googleapis.com/tensorflow/linux/cpu/tensorflow-1.0.1-cp27-none-linux_x86_64.whl
 
-# Copy sample notebooks.
-COPY bin /bin
+WORKDIR /var/www
+
+curl -sLo data/translate.ckpt-170600.data-00000-of-00001 https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-170600.data-00000-of-00001
+
+# Copy sample .
+COPY api /api
 COPY data /data
-COPY ptb /ptb
+COPY seq2seq /seq2seq
+COPY util util/
 
 
-# TensorBoard
-EXPOSE 6006
-# IPython
-EXPOSE 8888
+EXPOSE 8000
 
-CMD ["/bin/train.sh"]
+CMD ["python", "serve.py"]
