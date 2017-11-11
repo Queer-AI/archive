@@ -8,9 +8,9 @@
   "from_vocab_size": 40000,
   "to_vocab_size": 40000,
   "data_dir": "data",
-  "train_dir": "data",
-  "from_train_data": "data/train_from.txt",
-  "to_train_data": "data/train_to.txt",
+  "train_dir": "train",
+  "from_train_data": "train/train_from.txt",
+  "to_train_data": "train/train_to.txt",
   "max_train_data_size": 0,
   "steps_per_checkpoint": 200,
   "use_fp16": false

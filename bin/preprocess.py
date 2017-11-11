@@ -1,11 +1,13 @@
+#!/usr/bin/env python
+
 import os
 import csv
 import re
 import urllib
 
 INPUT_URL = "https://s3-us-west-1.amazonaws.com/queer-ai/corpus/literotica.csv"
-INPUT_FILE = "data/literotica.csv"
-DATA_DIR = "data/"
+INPUT_FILE = "train/literotica.csv"
+DATA_DIR = "train/"
 
 VALID_FRAC = .01
 TEST_FRAC = .01
