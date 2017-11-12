@@ -1,4 +1,4 @@
-FROM debian:wheezy
+FROM ubuntu:16.04
 
 # Pick up some TF dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         pkg-config \
         python \
         python-dev \
+        python-setuptools \
         rsync \
         software-properties-common \
         unzip \
@@ -17,15 +18,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-RUN sudo easy_install pip
+RUN easy_install pip
 
 RUN pip --no-cache-dir install \
         autobahn \
         numpy \
         six \
-        twisted \
-        && \
-    python -m ipykernel.kernelspec
+        twisted
 
 # Install TensorFlow CPU version from central repo
 RUN pip --no-cache-dir install \
@@ -35,15 +34,18 @@ WORKDIR /var/www
 
 ENV MODEL_ID 170600
 
-RUN curl -sLo data/translate.ckpt-${MODEL_ID}.data-00000-of-00001 https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-${MODEL_ID}.data-00000-of-00001 \
-  && curl -sLo data/translate.ckpt-${MODEL_ID}.index https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-${MODEL_ID}.index \
-  && curl -sLo data/translate.ckpt-${MODEL_ID}.meta https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-${MODEL_ID}.meta
+RUN set -e;\
+  curl -sLo data/translate.ckpt-${MODEL_ID}.data-00000-of-00001 https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-${MODEL_ID}.data-00000-of-00001;\
+ curl -sLo data/translate.ckpt-${MODEL_ID}.index https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-${MODEL_ID}.index;\
+curl -sLo data/translate.ckpt-${MODEL_ID}.meta https://s3-us-west-1.amazonaws.com/queer-ai/model_data/translate.ckpt-${MODEL_ID}.meta;
 
 # Copy sample .
-COPY api /api
-COPY data /data
-COPY seq2seq /seq2seq
-COPY util util/
+COPY api api
+COPY seq2seq seq2seq
+COPY util util
+COPY train train
+COPY config.json config.json
+COPY serve.py serve.py
 
 
 EXPOSE 8000
