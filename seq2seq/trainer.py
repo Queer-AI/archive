@@ -61,7 +61,7 @@ class Trainer():
                         data_set[bucket_id].append([source_ids, target_ids])
                         break
                     source, target = source_file.readline(), target_file.readline()
-                    return data_set
+        return data_set
 
     def train(self):
         """Train a seq->seq model using two sets of training."""
